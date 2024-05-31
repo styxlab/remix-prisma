@@ -1,12 +1,13 @@
 import { User } from "@prisma/client";
-import { Link, json, useLoaderData } from "@remix-run/react";
+import { Await, Link, defer, useLoaderData } from "@remix-run/react";
+import { Suspense } from "react";
 import { fetcher } from "~/utils/fetcher";
 
 export const config = { runtime: 'edge' };
 
 export const loader = async () => {
-    const user = await fetcher<{ user: User}>(`/db/user`)
-    return json(user)
+    const user = fetcher<{ user: User}>(`/db/user`)
+    return defer({ user } )
 }
 
 export default function Prisma() {
@@ -14,7 +15,11 @@ export default function Prisma() {
     return (
       <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.8" }}>
         <h1>Prisma Test</h1>
-        <h1>User FirstName: {user.firstname}</h1>
+        <Suspense fallback={<div>Loading...</div>}>
+          <Await resolve={user} >
+            {({ user }) => <h1>User FirstName: {user.firstname}</h1>}
+          </Await>    
+          </Suspense>
         <ul>
         <li>
           <Link to="/">Back</Link>
