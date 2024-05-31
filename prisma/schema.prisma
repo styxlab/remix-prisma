@@ -1,0 +1,79 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum UserRole {
+  USER
+  ADMIN
+  REALTOR
+  OWNER
+  STAFF
+}
+
+enum UserStatus {
+  ACTIVE
+  BLOCKED
+}
+
+enum CaseStatus {
+  SCREENING
+  PROGRESSING
+  CALLBACK
+  DELIVERY
+  PAYMENT
+  COMPLETED
+  WAITING
+  EXPIRED
+}
+
+enum NewsletterStatus {
+  INACTIVE
+  CREATED
+  CONFIRMED
+  UNSUBSCRIBED
+  BOUNCED
+  COMPLAINT
+}
+
+model User {
+  id                String   @id @default(uuid())
+  email             String   @unique
+  emailConfirmedAt  DateTime?
+
+  company           String?
+  firstname         String?
+  lastname          String?
+  phone             String?
+  address           String?
+  postalcode        String?
+  city              String?
+
+  referrer          String
+  counter           Int               @default(0)
+  userRole          UserRole?         @default(USER)
+  userStatus        UserStatus?       @default(ACTIVE)
+  caseStatus        CaseStatus?       @default(SCREENING)
+  newsletterStatus  NewsletterStatus? @default(INACTIVE)
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  updatedFromWebAt  DateTime
+  comment         String?
+  conversion      String?
+
+  realtorId       String? @unique
+  realtor         User?   @relation("RealtorClientRelation", fields: [realtorId], references: [id])
+  realtorClients  User[]  @relation("RealtorClientRelation")
+
+  @@index([id])
+}
+

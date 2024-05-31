@@ -6,8 +6,6 @@ import {
   ScrollRestoration,
 } from "@remix-run/react";
 
-export const config = { runtime: 'edge' };
-
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
