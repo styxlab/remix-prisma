@@ -1,4 +1,4 @@
-import { User } from "@prisma/client";
+import { type User } from "@prisma/client";
 import { Await, Link, defer, useLoaderData } from "@remix-run/react";
 import { Suspense } from "react";
 import { fetcher } from "~/utils/fetcher";
