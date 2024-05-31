@@ -1,4 +1,4 @@
-import { type User } from "@prisma/client";
+import { type User, UserStatus } from "@prisma/client";
 import { Await, Link, defer, useLoaderData } from "@remix-run/react";
 import { Suspense } from "react";
 import { fetcher } from "~/utils/fetcher";
@@ -11,10 +11,11 @@ export const loader = async () => {
 }
 
 export default function Prisma() {
+   const status = UserStatus.ACTIVE;
    const { user } = useLoaderData<typeof loader>();
     return (
       <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.8" }}>
-        <h1>Prisma Test</h1>
+        <h1>Prisma Test {status}</h1>
         <Suspense fallback={<div>Loading...</div>}>
           <Await resolve={user} >
             {({ user }) => <h1>User FirstName: {user.firstname}</h1>}
